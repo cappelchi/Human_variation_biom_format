@@ -40,6 +40,8 @@ script_info['required_options'] = [\
 ]
         
 script_info['optional_options'] = [\
+    make_option('-m', '--mapping_fp', type='existing_filepath', 
+        help='Metadata mapping file filepath'),
  # Example optional option
  #make_option('-o','--output_dir',type="new_dirpath",help='the output directory [default: %default]'),\
 ]
@@ -50,9 +52,7 @@ script_info['version'] = __version__
 def main():
     option_parser, opts, args =\
        parse_command_line_parameters(**script_info)
-       
-    print option_parser, opts, args
-       
+              
     if exists(opts.output_filepath):
         # don't overwrite existing output directory - make the user provide a
         # different name or move/delete the existing directory since it may
@@ -61,7 +61,8 @@ def main():
                             "Won't overwrite." % opts.output_filepath)
                             
     create_biom_file(opts.input_filepath,
-                     opts.output_filepath)
+                     opts.output_filepath,
+                     opts.mapping_fp)
 
 if __name__ == "__main__":
     main()
