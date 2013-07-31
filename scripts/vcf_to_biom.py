@@ -34,19 +34,21 @@ def process_header_entry(line):
 
 #Creates a list of allelic variation for each SNP. The list itself contains one entry of two numbers for each individual. 
 def indiv_snp_variation(line): 
-    l = line.split('\t')
-    list = l[9:]
-    variation_list = [] 
-    for i in list: 
-        variation_list.append(map(int,i.split(':')[0].split('|')))
-    return variation_list
+    genotypes = line.split('\t')[9:]
+    formatted_genotypes = [] 
+    for i in genotypes: 
+        formatted_genotypes.append(map(int,i.split(':')[0].split('|')))
+    return formatted_genotypes
  
 def create_biom_table(f):
     sample_ids = None
     observation_ids = []
     observation_md = []
     data = []
+    c = 0 
     for line in f:
+        print c
+        c += 1
         if line.startswith('##'):
             pass
         elif line.startswith('#CHROM'): 
@@ -60,34 +62,37 @@ def create_biom_table(f):
             else: 
                 chr_n, pos_n, rs_n, ref, alt, indiv_ids = \
                 process_data_entry_line (line, sample_ids)
-                observation_ids.append(("%s:%s" %(chr_n, pos_n)))
-                meta_dic = {"alleles":(ref, alt),"rs":rs_n}
-                observation_md.append(meta_dic)
-                data_row = []
-                for indiv, variation in indiv_ids:
-                    if variation == [0, 0]:
-                        data_row.append(0)
-                    elif variation == [0, 1]:
-                        data_row.append(1)
-                    elif variation == [1, 0]: 
-                        data_row.append(1)                        
-                    elif variation == [1, 1]:
-                        data_row.append(2)
-                    else: 
-                        data_row.append(3)
-                data.append(data_row)
+                observation_id = "%s:%s" %(chr_n, pos_n)
+                if observation_id not in observation_ids:
+                    observation_ids.append(observation_id)
+                    meta_dic = {"alleles":(ref, alt),"rs":rs_n}
+                    observation_md.append(meta_dic)
+                    data_row = []
+                    for indiv, variation in indiv_ids:
+                        if variation == [0, 0]:
+                            data_row.append(0)
+                        elif variation == [0, 1]:
+                            data_row.append(1)
+                        elif variation == [1, 0]: 
+                            data_row.append(1)                        
+                        elif variation == [1, 1]:
+                            data_row.append(2)
+                        else: 
+                            data_row.append(3)
+                    data.append(data_row)
     data = array(data)
-    otu_table = table_factory(data, 
+    return data, sample_ids, observation_ids, sample_md, observation_md
+    
+def create_biom_file(vcf_fp, output_fp, mapping_fp=None):
+    vcf_f = open(vcf_fp, 'U')
+    data, sample_ids, observation_ids, sample_md, observation_md =\
+    create_biom_table(vcf_f)
+    biom_table = table_factory(data, 
                               sample_ids, 
                               observation_ids,
                               sample_md, 
                               observation_md,
                               constructor=SparseOTUTable)
-    return otu_table
-    
-def create_biom_file(vcf_fp, output_fp, mapping_fp=None):
-    vcf_f = open(vcf_fp, 'U')
-    biom_table = create_biom_table(vcf_f)
     if mapping_fp != None:
         mapping_f = parse_mapping(open(mapping_fp,'U'))
     if mapping_f:
@@ -97,22 +102,4 @@ def create_biom_file(vcf_fp, output_fp, mapping_fp=None):
     output_f.close()
     
     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    
+                        
