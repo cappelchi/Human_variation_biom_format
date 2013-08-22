@@ -45,10 +45,7 @@ def create_biom_table(f):
     observation_ids = []
     observation_md = []
     data = []
-    c = 0 
     for line in f:
-        print c
-        c += 1
         if line.startswith('##'):
             pass
         elif line.startswith('#CHROM'): 
@@ -61,26 +58,38 @@ def create_biom_table(f):
                 raise ValueError, "Didn't find '#CHROM' line before data lines. Can't continue."
             else: 
                 chr_n, pos_n, rs_n, ref, alt, indiv_ids = \
-                process_data_entry_line (line, sample_ids)
-                observation_id = "%s:%s" %(chr_n, pos_n)
-                if observation_id not in observation_ids:
-                    observation_ids.append(observation_id)
-                    meta_dic = {"alleles":(ref, alt),"rs":rs_n}
-                    observation_md.append(meta_dic)
-                    data_row = []
-                    for indiv, variation in indiv_ids:
-                        if variation == [0, 0]:
-                            data_row.append(0)
-                        elif variation == [0, 1]:
-                            data_row.append(1)
-                        elif variation == [1, 0]: 
-                            data_row.append(1)                        
-                        elif variation == [1, 1]:
-                            data_row.append(2)
-                        else: 
-                            data_row.append(3)
-                    data.append(data_row)
-    data = array(data)
+                process_data_entry_line(line, sample_ids)
+                for i in ref.split(','):
+                    if len(i) > 1: 
+                        check = True
+                    else: 
+                        check = False
+                if check == True:
+                    pass
+                else: 
+                    observation_id = "%s:%s" %(chr_n, pos_n)
+                    if observation_id in observation_ids:
+                        pass
+                    else:    
+                        observation_ids.append(observation_id)
+                        meta_dic = {"alleles":(ref, alt),"rs":rs_n}
+                        observation_md.append(meta_dic)
+                        data_row = []
+                        for indiv, variation in indiv_ids:
+                            if variation == [0, 0]:
+                                data_row.append(0)
+                            elif variation == [0, 1]:
+                                data_row.append(1)
+                            elif variation == [1, 0]: 
+                                data_row.append(1)                        
+                            elif variation == [1, 1]:
+                                data_row.append(2)
+                        data.append(data_row)
+    if len(data) == 0:
+        raise ValueError, """No valid SNP data was present in the file. Indels will be 
+ignored"""
+    else: 
+        data = array(data)
     return data, sample_ids, observation_ids, sample_md, observation_md
     
 def create_biom_file(vcf_fp, output_fp, mapping_fp=None):
@@ -95,11 +104,15 @@ def create_biom_file(vcf_fp, output_fp, mapping_fp=None):
                               constructor=SparseOTUTable)
     if mapping_fp != None:
         mapping_f = parse_mapping(open(mapping_fp,'U'))
-    if mapping_f:
         biom_table.addSampleMetadata(mapping_f)
-        output_f = open(output_fp, 'w')
+    output_f = open(output_fp, 'w')
     output_f.write(biom_table.getBiomFormatJsonString(generatedby()))
     output_f.close()
     
-    
+# biom biom.util.biom_open 
+# and look for python module that can take zipped files.
+# parrallel merge otu tables
+# bl2seek on the command 
+
+
                         

@@ -100,8 +100,12 @@ class ExampleTests(TestCase):
         
     def test_create_biom_table_3(self):
         """Does the function return the correct output when given the correct input?"""
-        vcf = list(create_biom_table(self.example_file3))
-        expected = [array([[3, 3, 0, 0, 2]]), ['HG00096', 'HG00097', 'HG00099', 'HG00100', 'HG00101'], ['10:89623323'], [{}, {}, {}, {}, {}], [{'alleles': ('GT', 'A,TC'), 'rs': 'rs1044322'}]]
+        self.assertRaises(ValueError, create_biom_table, self.example_file3)
+        
+    def test_create_biom_table_4(self):
+        """Does the function return the correct output when given the correct input?"""
+        vcf = list(create_biom_table(self.example_file4))
+        expected = [array([[0, 0,],[0, 0,],[0, 0,],[0, 1]]), ['HG00096', 'HG00097'], ['10:89674917', '10:89674997', '10:89675036', '10:89675296' ], [{}, {}], [{'alleles': ('T', 'G'), 'rs': 'rs182708158'}, {'alleles': ('A', 'G'), 'rs': 'rs116819638'}, {'alleles': ('C', 'T'), 'rs': 'rs111627758'}, {'alleles': ('A', 'G'), 'rs': 'rs1234224'}]]
         self.assertEqual(vcf, expected)
         
 example_file1 = """##fileformat=VCFv4.0													
@@ -126,28 +130,26 @@ example_file3 = """##fileformat=VCFv4.0
 #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	HG00096	HG00097	HG00099	HG00100	HG00101
 10	89623323	rs1044322	GT	A,TC	100	PASS	.	GT:AP	2|0:0.015,0.000	1|2:0.000,0.000	0|0:0.002,0.000	0|0:0.000,0.052	1|1:0.000,0.000""".split('\n')
 
-example_file4 = '''##fileformat=VCFv4.1										
-"##INFO=<ID=LDAF,Number=1,Type=Float,Description=""MLE Allele Frequency Accounting for LD"">"										
-"##INFO=<ID=AVGPOST,Number=1,Type=Float,Description=""Average posterior probability from MaCH/Thunder"">"										
-"##INFO=<ID=RSQ,Number=1,Type=Float,Description=""Genotype imputation quality from MaCH/Thunder"">"										
-"##INFO=<ID=ERATE,Number=1,Type=Float,Description=""Per-marker Mutation rate from MaCH/Thunder"">"										
-"##INFO=<ID=THETA,Number=1,Type=Float,Description=""Per-marker Transition rate from MaCH/Thunder"">"										
-"##INFO=<ID=CIEND,Number=2,Type=Integer,Description=""Confidence interval around END for imprecise variants"">"										
-"##INFO=<ID=SNPSOURCE,Number=.,Type=String,Description=""indicates if a snp was called when analysing the low coverage or exome alignment data"">"										
+example_file4 = """##fileformat=VCFv4.1										
+##INFO=<ID=LDAF,Number=1,Type=Float,Description=""MLE Allele Frequency Accounting for LD"">										
+##INFO=<ID=AVGPOST,Number=1,Type=Float,Description=""Average posterior probability from MaCH/Thunder"">										
+##INFO=<ID=RSQ,Number=1,Type=Float,Description=""Genotype imputation quality from MaCH/Thunder"">								
+##INFO=<ID=ERATE,Number=1,Type=Float,Description=""Per-marker Mutation rate from MaCH/Thunder"">										
+##INFO=<ID=THETA,Number=1,Type=Float,Description=""Per-marker Transition rate from MaCH/Thunder"">										
+##INFO=<ID=CIEND,Number=2,Type=Integer,Description=""Confidence interval around END for imprecise variants"">										
+##INFO=<ID=SNPSOURCE,Number=.,Type=String,Description=""indicates if a snp was called when analysing the low coverage or exome alignment data"">									
 ##reference=GRCh37										
 ##reference=GRCh37										
 #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	HG00096	HG00097
-10	89674917	rs182708158	T	G	100	PASS	ERATE=0.0004;LDAF=0.0024;AA=T;AN=2184;THETA=0.0008;VT=SNP;AVGPOST=0.9993;RSQ=0.9008;AC=5;SNPSOURCE=LOWCOV;AF=0.0023;ASN_AF=0.01	GT:DS:GL	"0|0:0.000:-0.03,-1.22,-5.00"	"0|0:0.000:-0.01,-1.62,-5.00"
-10	89674997	rs116819638	A	G	100	PASS	ERATE=0.0004;AN=2184;AC=13;VT=SNP;RSQ=0.9179;AA=A;AVGPOST=0.9989;LDAF=0.0063;SNPSOURCE=LOWCOV;THETA=0.0013;AF=0.01;AFR_AF=0.03	GT:DS:GL	"0|0:0.000:-0.03,-1.23,-5.00"	"0|0:0.000:-0.02,-1.33,-5.00"
-10	89675029	rs151009112	T	C	100	PASS	ERATE=0.0005;AA=T;AN=2184;LDAF=0.0018;THETA=0.0005;VT=SNP;RSQ=0.4609;SNPSOURCE=LOWCOV;AC=2;AVGPOST=0.9974;AF=0.0009;ASN_AF=0.0035	GT:DS:GL	"0|0:0.000:-0.03,-1.23,-5.00"	"0|0:0.000:-0.04,-1.05,-5.00"
-10	89675036	rs111627758	C	T	100	PASS	ERATE=0.0004;LDAF=0.0047;AA=T;AN=2184;RSQ=0.8612;THETA=0.0005;VT=SNP;AC=9;SNPSOURCE=LOWCOV;AVGPOST=0.9984;AF=0.0041;AMR_AF=0.01;EUR_AF=0.01	GT:DS:GL	"0|0:0.000:-0.03,-1.16,-5.00"	"0|0:0.000:-0.02,-1.28,-5.00"
-10	89675296	rs1234224	A	G	100	PASS	ERATE=0.0004;AC=915;RSQ=0.9931;THETA=0.0004;AA=G;AN=2184;VT=SNP;LDAF=0.4188;SNPSOURCE=LOWCOV;AVGPOST=0.9961;AF=0.42;ASN_AF=0.48;AMR_AF=0.43;AFR_AF=0.42;EUR_AF=0.37	GT:DS:GL	"0|0:0.000:-0.01,-1.50,-5.00"	"1|0:1.000:-5.00,-0.00,-4.40"'''.split('\n')
+10	89674917	rs182708158	T	G	100	PASS	ERATE=0.0004;LDAF=0.0024;AA=T;AN=2184;THETA=0.0008;VT=SNP;AVGPOST=0.9993;RSQ=0.9008;AC=5;SNPSOURCE=LOWCOV;AF=0.0023;ASN_AF=0.01	GT:DS:GL	0|0:0.000:-0.03,-1.22,-5.00	0|0:0.000:-0.01,-1.62,-5.00
+10	89674997	rs116819638	A	G	100	PASS	ERATE=0.0004;AN=2184;AC=13;VT=SNP;RSQ=0.9179;AA=A;AVGPOST=0.9989;LDAF=0.0063;SNPSOURCE=LOWCOV;THETA=0.0013;AF=0.01;AFR_AF=0.03	GT:DS:GL	0|0:0.000:-0.03,-1.23,-5.00	0|0:0.000:-0.02,-1.33,-5.00
+10	89674997	rs151009112	T	C	100	PASS	ERATE=0.0005;AA=T;AN=2184;LDAF=0.0018;THETA=0.0005;VT=SNP;RSQ=0.4609;SNPSOURCE=LOWCOV;AC=2;AVGPOST=0.9974;AF=0.0009;ASN_AF=0.0035	GT:DS:GL	0|0:0.000:-0.03,-1.23,-5.00	0|0:0.000:-0.04,-1.05,-5.00
+10	89675036	rs111627758	C	T	100	PASS	ERATE=0.0004;LDAF=0.0047;AA=T;AN=2184;RSQ=0.8612;THETA=0.0005;VT=SNP;AC=9;SNPSOURCE=LOWCOV;AVGPOST=0.9984;AF=0.0041;AMR_AF=0.01;EUR_AF=0.01	GT:DS:GL	0|0:0.000:-0.03,-1.16,-5.00	0|0:0.000:-0.02,-1.28,-5.00
+10	89675296	rs1234224	A	G	100	PASS	ERATE=0.0004;AC=915;RSQ=0.9931;THETA=0.0004;AA=G;AN=2184;VT=SNP;LDAF=0.4188;SNPSOURCE=LOWCOV;AVGPOST=0.9961;AF=0.42;ASN_AF=0.48;AMR_AF=0.43;AFR_AF=0.42;EUR_AF=0.37	GT:DS:GL	0|0:0.000:-0.01,-1.50,-5.0	1|0:1.000:-5.00,-0.00,-4.40""".split('\n')
 
 
 
 
 if __name__ == "__main__":
     main()
-    
-
     
