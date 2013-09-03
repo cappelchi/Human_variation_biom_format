@@ -42,8 +42,11 @@ script_info['required_options'] = [\
 script_info['optional_options'] = [\
     make_option('-m', '--mapping_fp', type='existing_filepath', 
         help='Metadata mapping file filepath'),
- # Example optional option
- #make_option('-o','--output_dir',type="new_dirpath",help='the output directory [default: %default]'),\
+    make_option('-z', '--zip_file', action='store_true', 
+        dest='zip_file',
+        help='Output will be a gzipped file'\
+        ' [default: %default]'),
+
 ]
 script_info['version'] = __version__
 
@@ -52,17 +55,26 @@ script_info['version'] = __version__
 def main():
     option_parser, opts, args =\
        parse_command_line_parameters(**script_info)
-              
-    if exists(opts.output_filepath):
+        
+    output_fp = opts.output_filepath
+    zip_file = opts.zip_file
+    if zip_file:
+        zip = 'gz'
+        output_fp = '%s.%s' % (output_fp, zip)
+    else:
+        zip = None         
+        
+    if exists(output_fp):
         # don't overwrite existing output directory - make the user provide a
         # different name or move/delete the existing directory since it may
         # have taken a while to create.
         option_parser.error("Output directory (%s) already exists. "
                             "Won't overwrite." % opts.output_filepath)
-                            
+        
     create_biom_file(opts.input_filepath,
                      opts.output_filepath,
-                     opts.mapping_fp)
+                     opts.mapping_fp, 
+                     zip)
 
 if __name__ == "__main__":
     main()
