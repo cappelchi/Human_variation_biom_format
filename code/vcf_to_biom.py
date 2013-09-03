@@ -15,6 +15,7 @@ from biom.table import table_factory, SparseOTUTable
 from biom.parse import parse_mapping, generatedby
 from numpy import array
 import os
+import gzip
 
 def process_data_entry_line (line, ids):
     fields = line.split('\t') 
@@ -92,8 +93,14 @@ ignored"""
         data = array(data)
     return data, sample_ids, observation_ids, sample_md, observation_md
     
-def create_biom_file(vcf_fp, output_fp, mapping_fp=None):
-    vcf_f = open(vcf_fp, 'U')
+def create_biom_file(vcf_fp, output_fp, mapping_fp=None, zip=None):
+    if vcf_fp.endswith('gz'):
+        vcf_f = gzip.open(vcf_fp)
+    elif vcf_fp.endswith('vcf'):
+        vcf_f = open(vcf_fp, 'U')
+    else:
+        raise ValueError, "Invalid file format or extension, only '.vcf' or '.vcf.gz' are\
+accepted"
     data, sample_ids, observation_ids, sample_md, observation_md =\
     create_biom_table(vcf_f)
     biom_table = table_factory(data, 
@@ -105,14 +112,16 @@ def create_biom_file(vcf_fp, output_fp, mapping_fp=None):
     if mapping_fp != None:
         mapping_f = parse_mapping(open(mapping_fp,'U'))
         biom_table.addSampleMetadata(mapping_f)
-    output_f = open(output_fp, 'w')
+    if zip == 'gz':
+        output_f = gzip.open('%s.%s' % (output_fp, zip), 'wb')
+    else:
+        output_f = open(output_fp, 'w')
     output_f.write(biom_table.getBiomFormatJsonString(generatedby()))
     output_f.close()
     
 # biom biom.util.biom_open 
-# and look for python module that can take zipped files.
 # parrallel merge otu tables
-# bl2seek on the command 
+
 
 
                         
