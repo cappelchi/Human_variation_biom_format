@@ -34,6 +34,7 @@ class ExampleTests(TestCase):
         self.example_file2 = example_file2
         self.example_file3 = example_file3
         self.example_file4 = example_file4
+        self.example_file5 = example_file5
         
 ##Tests for process_data_entry_line
     def test_process_data_entry_line(self):
@@ -108,6 +109,12 @@ class ExampleTests(TestCase):
         expected = [array([[0, 0,],[0, 0,],[0, 0,],[0, 1]]), ['HG00096', 'HG00097'], ['10:89674917', '10:89674997', '10:89675036', '10:89675296' ], [{}, {}], [{'alleles': ('T', 'G'), 'rs': 'rs182708158'}, {'alleles': ('A', 'G'), 'rs': 'rs116819638'}, {'alleles': ('C', 'T'), 'rs': 'rs111627758'}, {'alleles': ('A', 'G'), 'rs': 'rs1234224'}]]
         self.assertEqual(vcf, expected)
         
+    def test_create_biom_table_5(self):
+        """Does the function return the correct output when given the correct input?"""
+        vcf = list(create_biom_table(self.example_file5))
+        expected = [array([[2],[1],[1],[1],[1],[1],[1]]), ['TNT028'], ['1:25611035', '1:25627613', '1:25627627', '1:25627628', '1:25656531', '1:25656673', '1:25688901'], [{}], [{'alleles': ('G', 'C'), 'rs': 'rs2301153'}, {'alleles': ('C', 'A'), 'rs': '.'}, {'alleles': ('C', 'CG'), 'rs': '.'}, {'alleles': ('A', 'C'), 'rs': '.'}, {'alleles': ('T', 'C'), 'rs': '.'}, {'alleles': ('C', 'T'), 'rs': 'rs667179'}, {'alleles': ('T', 'G'), 'rs': '.'}]]
+        self.assertEqual(vcf, expected)
+    
 example_file1 = """##fileformat=VCFv4.0													
 ##source=BCM:SNPTools:hapfuse													
 ##reference=1000Genomes-NCBI37													
@@ -147,6 +154,16 @@ example_file4 = """##fileformat=VCFv4.1
 10	89675036	rs111627758	C	T	100	PASS	ERATE=0.0004;LDAF=0.0047;AA=T;AN=2184;RSQ=0.8612;THETA=0.0005;VT=SNP;AC=9;SNPSOURCE=LOWCOV;AVGPOST=0.9984;AF=0.0041;AMR_AF=0.01;EUR_AF=0.01	GT:DS:GL	0|0:0.000:-0.03,-1.16,-5.00	0|0:0.000:-0.02,-1.28,-5.00
 10	89675296	rs1234224	A	G	100	PASS	ERATE=0.0004;AC=915;RSQ=0.9931;THETA=0.0004;AA=G;AN=2184;VT=SNP;LDAF=0.4188;SNPSOURCE=LOWCOV;AVGPOST=0.9961;AF=0.42;ASN_AF=0.48;AMR_AF=0.43;AFR_AF=0.42;EUR_AF=0.37	GT:DS:GL	0|0:0.000:-0.01,-1.50,-5.0	1|0:1.000:-5.00,-0.00,-4.40""".split('\n')
 
+example_file5 = """##reference=file://E:\Genomes\Homo_sapiens\UCSC\hg19\Sequence\WholeGenomeFASTA\genome.fa									
+##source=GATK 1.6									
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	TNT028
+1	25611035	rs2301153	G	C	10465.01	PASS	AC=2;AF=1.0;AN=2;DP=470;QD=22.27;TI=NM_001127691,NM_016124;GI=RHD,RHD;FC=Silent,Silent	GT:AD:DP:GQ:PL:VF:GQX	1/1:0,470:470:99:10465,713,0:1.000:99
+1	25627613	.	C	A	4033.01	PASS	AC=1;AF=0.5;AN=2;DP=167;QD=24.15;TI=NM_001127691,NM_016124;GI=RHD,RHD;FC=Silent,Silent	GT:AD:DP:GQ:PL:VF:GQX	0/1:55,112:167:99:4033,0,891:0.671:99
+1	25627627	.	C	CG	3582	PASS	AC=1;AF=0.5;AN=2;DP=163;QD=21.98;TI=NM_001127691,NM_016124;GI=RHD,RHD;FC=Noncoding,Noncoding	GT:AD:DP:GQ:PL:VF:GQX	0/1:57,106:167:99:3582,0,1837:0.650:99
+1	25627628	.	A	C	3555.01	PASS	AC=1;AF=0.5;AN=2;DP=163;QD=21.81;TI=NM_001127691,NM_016124;GI=RHD,RHD;FC=Silent,Silent	GT:AD:DP:GQ:PL:VF:GQX	0/1:57,106:163:99:3555,0,982:0.650:99
+1	25656531	.	T	C	2414.01	PASS	AC=1;AF=0.5;AN=2;DP=532;QD=4.54;TI=NM_001127691,NM_016124;GI=RHD,RHD;FC=Silent,Silent;EXON	GT:AD:DP:GQ:PL:VF:GQX	0/1:387,145:532:99:2444,0,7968:0.273:99
+1	25656673	rs667179	C	T	2233.01	PASS	AC=1;AF=0.5;AN=2;DP=626;QD=3.57;TI=NM_001127691,NM_016124;GI=RHD,RHD;FC=Silent,Silent;EXON	GT:AD:DP:GQ:PL:VF:GQX	0/1:483,143:629:99:2263,0,9941:0.228:99
+1	25688901	.	T	G	11.34	LowVariantFreq	AC=1;AF=0.5;AN=2;DP=22;QD=0.52;TI=NM_138617,NM_020485,NM_138618,NM_138616;GI=RHCE,RHCE,RHCE,RHCE;FC=Silent,Silent,Silent,Silent;EXON	GT:AD:DP:GQ:PL:VF:GQX	0/1:20,2:22:40.83:41,0,442:0.091:11""".split('\n')
 
 
 

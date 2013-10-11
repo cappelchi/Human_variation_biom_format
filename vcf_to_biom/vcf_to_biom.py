@@ -12,9 +12,10 @@ __email__ = "chasejohnh@gmail.com"
 __status__ = "Development"
 
 from biom.table import table_factory, SparseOTUTable
-from biom.parse import parse_mapping, generatedby
+from biom.parse import MetadataMap, generatedby
 from numpy import array
 import os
+import gzip
 
 def process_data_entry_line (line, ids):
     fields = line.split('\t') 
@@ -36,8 +37,11 @@ def process_header_entry(line):
 def indiv_snp_variation(line): 
     genotypes = line.split('\t')[9:]
     formatted_genotypes = [] 
-    for i in genotypes: 
-        formatted_genotypes.append(map(int,i.split(':')[0].split('|')))
+    for i in genotypes:
+        try: 
+            formatted_genotypes.append(map(int,i.split(':')[0].split('|')))
+        except:
+                        formatted_genotypes.append(map(int,i.split(':')[0].split('/')))
     return formatted_genotypes
  
 def create_biom_table(f):
@@ -92,10 +96,19 @@ ignored"""
         data = array(data)
     return data, sample_ids, observation_ids, sample_md, observation_md
     
-def create_biom_file(vcf_fp, output_fp, mapping_fp=None):
-    vcf_f = open(vcf_fp, 'U')
+def create_biom_file(vcf_fp, output_fp, mapping_fp=None, zip=None):
+    if vcf_fp.endswith('gz'):
+        vcf_f = gzip.open(vcf_fp)
+    elif vcf_fp.endswith('vcf'):
+        vcf_f = open(vcf_fp, 'U')
+    else:
+        raise ValueError, "Invalid file format or extension, only '.vcf' or '.vcf.gz' are\
+accepted"
     data, sample_ids, observation_ids, sample_md, observation_md =\
     create_biom_table(vcf_f)
+    print sample_ids
+    print data
+    sample_md = None
     biom_table = table_factory(data, 
                               sample_ids, 
                               observation_ids,
@@ -103,16 +116,19 @@ def create_biom_file(vcf_fp, output_fp, mapping_fp=None):
                               observation_md,
                               constructor=SparseOTUTable)
     if mapping_fp != None:
-        mapping_f = parse_mapping(open(mapping_fp,'U'))
+        mapping_f = MetadataMap.fromFile(mapping_fp)
         biom_table.addSampleMetadata(mapping_f)
-    output_f = open(output_fp, 'w')
-    output_f.write(biom_table.getBiomFormatJsonString(generatedby()))
+    if zip == 'gz':
+        output_f = gzip.open('%s.%s' % (output_fp, zip), 'wb')
+    else:
+        output_f = open(output_fp, 'w')
+    biom_table.getBiomFormatJsonString(generatedby(), direct_io=output_f)
     output_f.close()
     
 # biom biom.util.biom_open 
-# and look for python module that can take zipped files.
 # parrallel merge otu tables
-# bl2seek on the command 
+# Use upgma clustering for population pattern
+# Supervised learning for gender prediction based on SNPs and which SNPs are useful
 
 
-                        
+                       
