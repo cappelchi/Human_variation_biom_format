@@ -60,52 +60,42 @@ def create_biom_table(f):
             pass
         elif line.startswith('#CHROM'): 
             sample_ids = process_header_entry(line)
-<<<<<<< HEAD
             sample_md = None
-=======
         else:
->>>>>>> cd256e2c4d20638be0b7680e5d92f7e6d6917552
             if sample_ids == None:
                 raise ValueError, "Didn't find '#CHROM' line before data lines. Can't continue."
-        else: 
-            chr_n, pos_n, rs_n, ref, alt, indiv_ids = \
-            process_data_entry_line(line, sample_ids)
-            for i in ref.split(','):
-                if len(i) > 1: 
-                    check = True
-                else: 
-                    check = False
-            if check == True:
-                pass
             else: 
-                observation_id = "%s:%s" %(chr_n, pos_n)
-                if observation_id in observation_ids:
+                chr_n, pos_n, rs_n, ref, alt, indiv_ids = \
+                process_data_entry_line(line, sample_ids)
+                for i in ref.split(','):
+                    if len(i) > 1: 
+                        check = True
+                    else: 
+                        check = False
+                if check == True:
                     pass
-                else:    
-                    observation_ids.append(observation_id)
-                    meta_dic = {"alleles":(ref, alt),"rs":rs_n}
-                    observation_md.append(meta_dic)
-                    data_row = []
-                    for indiv, variation in indiv_ids:
-                        if len(variation) == 2:
-                            if variation == [0, 0]:
-                                data_row.append(0)
-                            elif variation == [0, 1]:
-                                data_row.append(1)
-                            elif variation == [1, 0]: 
-                                data_row.append(1)                        
-                            elif variation == [1, 1]:
-                                data_row.append(2)
-<<<<<<< HEAD
-                        else:
-                            data_row.append(variation[0])
-                    data.append(data_row)
-=======
-                            else: 
-                                data_row.append(3)
-                                print observation_id
+                else: 
+                    observation_id = "%s:%s" %(chr_n, pos_n)
+                    if observation_id in observation_ids:
+                        pass
+                    else:    
+                        observation_ids.append(observation_id)
+                        meta_dic = {"alleles":(ref, alt),"rs":rs_n}
+                        observation_md.append(meta_dic)
+                        data_row = []
+                        for indiv, variation in indiv_ids:
+                            if len(variation) == 2:
+                                if variation == [0, 0]:
+                                    data_row.append(0)
+                                elif variation == [0, 1]:
+                                    data_row.append(1)
+                                elif variation == [1, 0]: 
+                                    data_row.append(1)                        
+                                elif variation == [1, 1]:
+                                    data_row.append(2)
+                            else:
+                                data_row.append(variation[0])
                         data.append(data_row)
->>>>>>> cd256e2c4d20638be0b7680e5d92f7e6d6917552
     if len(data) == 0:
         raise ValueError, """No valid SNP data was present in the file. Indels will be 
 ignored"""
@@ -123,10 +113,7 @@ def create_biom_file(vcf_fp, output_fp, mapping_fp=None, zip=None):
 accepted"
     data, sample_ids, observation_ids, sample_md, observation_md =\
     create_biom_table(vcf_f)
-<<<<<<< HEAD
     sample_md = None
-=======
->>>>>>> cd256e2c4d20638be0b7680e5d92f7e6d6917552
     biom_table = table_factory(data, 
                               sample_ids, 
                               observation_ids,

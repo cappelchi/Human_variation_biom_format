@@ -36,10 +36,7 @@ class ExampleTests(TestCase):
         self.example_file4 = example_file4
         self.example_file5 = example_file5
         self.example_file6 = example_file6
-<<<<<<< HEAD
         self.example_file7 = example_file7
-=======
->>>>>>> cd256e2c4d20638be0b7680e5d92f7e6d6917552
 
         
 ##Tests for process_data_entry_line
@@ -127,17 +124,12 @@ class ExampleTests(TestCase):
         expected = [array([[0], [0], [0], [0]]), ['vac6wt'], ['NC_007779.1:10098', 'NC_007779.1:10099', 'NC_007779.1:10100', 'NC_007779.1:10101'], None, [{'alleles': ('C', '.'), 'rs': '.'}, {'alleles': ('G', '.'), 'rs': '.'}, {'alleles': ('G', '.'), 'rs': '.'}, {'alleles': ('T', '.'), 'rs': '.'}]]
         self.assertEqual(vcf, expected)
         
-<<<<<<< HEAD
     def test_create_biom_table_7(self):
         """Does the function return the correct output when given the correct input?"""
         vcf = list(create_biom_table(self.example_file7))
-        print vcf
         expected = [array([[0, 0], [0, 0], [0, 1]]), ['vac6wt', 'vac7wt'], ['NC_007779.1:10098', 'NC_007779.1:10099', 'NC_007779.1:10100'], None, [{'alleles': ('C', 'T'), 'rs': '.'}, {'alleles': ('G', '.'), 'rs': '.'}, {'alleles': ('G', 'A'), 'rs': '.'}]]
-        print expected  
         self.assertEqual(vcf, expected)
         
-=======
->>>>>>> cd256e2c4d20638be0b7680e5d92f7e6d6917552
         
 example_file1 = """##fileformat=VCFv4.0													
 ##source=BCM:SNPTools:hapfuse													
@@ -202,7 +194,6 @@ NC_007779.1	10098	.	C	.	68	.	AN=1;DP=1;MQ=60.00;MQ0=0	GT:DP:MLPSAC:MLPSAF	0:01
 NC_007779.1	10099	.	G	.	65	.	AN=1;DP=1;MQ=60.00;MQ0=0	GT:DP:MLPSAC:MLPSAF	0:01
 NC_007779.1	10100	.	G	.	68	.	AN=1;DP=1;MQ=60.00;MQ0=0	GT:DP:MLPSAC:MLPSAF	0:01
 NC_007779.1	10101	.	T	.	63	.	AN=1;DP=1;MQ=60.00;MQ0=0	GT:DP:MLPSAC:MLPSAF	0:01""".split('\n')
-<<<<<<< HEAD
 
 example_file7 = """##reference=file:///home/jsahl/wgfast/Ecoli/run_subsample/scratch/reference.fasta										
 #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	vac6wt	vac7wt
@@ -215,8 +206,6 @@ INFO  13:50:06,001 AFCalcFactory - Selecting model EXACT_GENERAL_PLOIDY
 NC_007779.1	10098	.	C	T	68	.	AN=1;DP=1;MQ=60.00;MQ0=0	GT:DP:MLPSAC:MLPSAF	0:01	0:01
 NC_007779.1	10099	.	G	.	65	.	AN=1;DP=1;MQ=60.00;MQ0=0	GT:DP:MLPSAC:MLPSAF	0:01	.
 NC_007779.1	10100	.	G	A	68	.	AN=1;DP=1;MQ=60.00;MQ0=0	GT:DP:MLPSAC:MLPSAF	0:01	1:01""".split('\n')
-=======
->>>>>>> cd256e2c4d20638be0b7680e5d92f7e6d6917552
 
 
 if __name__ == "__main__":
