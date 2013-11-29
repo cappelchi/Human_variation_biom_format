@@ -1,0 +1,17 @@
+Num samples: 1
+Num observations: 439
+Total count: 584
+Table density (fraction of non-zero values): 1.000
+Table md5 (unzipped): 2c89cab2687c669c6e220a03b1b5e2a7
+
+Counts/sample summary:
+ Min: 584.0
+ Max: 584.0
+ Median: 584.000
+ Mean: 584.000
+ Std. dev.: 0.000
+ Sample Metadata Categories: None provided
+ Observation Metadata Categories: alleles; rs
+
+Counts/sample detail:
+ TNT043: 584.0

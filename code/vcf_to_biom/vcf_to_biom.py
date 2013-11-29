@@ -3,7 +3,7 @@
 from __future__ import division
 
 __author__ = "John Chase"
-__copyright__ = "Copyright 2011, The QIIME project"
+__copyright__ = "Copyright 2013, The QIIME project"
 __credits__ = ["John Chase"]
 __license__ = "GPL"
 __version__ = "1.7.0-dev"
@@ -17,7 +17,7 @@ from numpy import array
 import os
 import gzip
 
-def process_data_entry_line (line, ids):
+def process_data_entry_line(line, ids):
     fields = line.split('\t') 
     chr_n = fields[0] 
     pos_n = fields[1]
@@ -41,7 +41,7 @@ def indiv_snp_variation(line):
         try: 
             formatted_genotypes.append(map(int,i.split(':')[0].split('|')))
         except:
-                        formatted_genotypes.append(map(int,i.split(':')[0].split('/')))
+            formatted_genotypes.append(map(int,i.split(':')[0].split('/')))
     return formatted_genotypes
  
 def create_biom_table(f):
@@ -49,35 +49,35 @@ def create_biom_table(f):
     observation_ids = []
     observation_md = []
     data = []
-    sample_md = None
     for line in f:
         if line.startswith('##'):
             pass
         elif line.startswith('#CHROM'): 
             sample_ids = process_header_entry(line)
-        else:
+            sample_md = None
             if sample_ids == None:
                 raise ValueError, "Didn't find '#CHROM' line before data lines. Can't continue."
-            else: 
-                chr_n, pos_n, rs_n, ref, alt, indiv_ids = \
-                process_data_entry_line(line, sample_ids)
-                for i in ref.split(','):
-                    if len(i) > 1: 
-                        check = True
-                    else: 
-                        check = False
-                if check == True:
-                    pass
+        else: 
+            chr_n, pos_n, rs_n, ref, alt, indiv_ids = \
+            process_data_entry_line(line, sample_ids)
+            for i in ref.split(','):
+                if len(i) > 1: 
+                    check = True
                 else: 
-                    observation_id = "%s:%s" %(chr_n, pos_n)
-                    if observation_id in observation_ids:
-                        pass
-                    else:    
-                        observation_ids.append(observation_id)
-                        meta_dic = {"alleles":(ref, alt),"rs":rs_n}
-                        observation_md.append(meta_dic)
-                        data_row = []
-                        for indiv, variation in indiv_ids:
+                    check = False
+            if check == True:
+                pass
+            else: 
+                observation_id = "%s:%s" %(chr_n, pos_n)
+                if observation_id in observation_ids:
+                    pass
+                else:    
+                    observation_ids.append(observation_id)
+                    meta_dic = {"alleles":(ref, alt),"rs":rs_n}
+                    observation_md.append(meta_dic)
+                    data_row = []
+                    for indiv, variation in indiv_ids:
+                        if len(variation) == 2:
                             if variation == [0, 0]:
                                 data_row.append(0)
                             elif variation == [0, 1]:
@@ -86,10 +86,9 @@ def create_biom_table(f):
                                 data_row.append(1)                        
                             elif variation == [1, 1]:
                                 data_row.append(2)
-                            else: 
-                                data_row.append(3)
-                                print observation_id
-                        data.append(data_row)
+                        else:
+                            data_row.append(variation[0])
+                    data.append(data_row)
     if len(data) == 0:
         raise ValueError, """No valid SNP data was present in the file. Indels will be 
 ignored"""
@@ -107,6 +106,7 @@ def create_biom_file(vcf_fp, output_fp, mapping_fp=None, zip=None):
 accepted"
     data, sample_ids, observation_ids, sample_md, observation_md =\
     create_biom_table(vcf_f)
+    sample_md = None
     biom_table = table_factory(data, 
                               sample_ids, 
                               observation_ids,
@@ -123,10 +123,5 @@ accepted"
     biom_table.getBiomFormatJsonString(generatedby(), direct_io=output_f)
     output_f.close()
     
-# biom biom.util.biom_open 
-# parrallel merge otu tables
-# Use upgma clustering for population pattern
-# Supervised learning for gender prediction based on SNPs and which SNPs are useful
-
 
                        
