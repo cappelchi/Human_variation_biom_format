@@ -35,6 +35,8 @@ class ExampleTests(TestCase):
         self.example_file3 = example_file3
         self.example_file4 = example_file4
         self.example_file5 = example_file5
+        self.example_file6 = example_file6
+
         
 ##Tests for process_data_entry_line
     def test_process_data_entry_line(self):
@@ -89,14 +91,14 @@ class ExampleTests(TestCase):
     def test_create_biom_table(self):
         """Does the function return the correct output when given the correct input?"""
         vcf = list(create_biom_table(self.example_file1))
-        expected = [array([[0, 0, 0, 0, 0]]), ['HG00096', 'HG00097', 'HG00099', 'HG00100', 'HG00101'], ['10:89623323'], [{}, {}, {}, {}, {}], [{'alleles': ('G', 'A'), 'rs': 'rs1044322'}]]
+        expected = [array([[0, 0, 0, 0, 0]]), ['HG00096', 'HG00097', 'HG00099', 'HG00100', 'HG00101'], ['10:89623323'], None, [{'alleles': ('G', 'A'), 'rs': 'rs1044322'}]]
         self.assertEqual(vcf, expected)
  
     def test_create_biom_table_2(self):
         """Does the function return the correct output when given the correct input?"""
         vcf = list(create_biom_table(self.example_file2))
         expected = [array([[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]), ['HG00096', 'HG00097', 'HG00099', 'HG00100', 'HG00101', 'HG00102', 'HG00103', 'HG00104', 'HG00106', 'HG00108', 'HG00109', 'HG00110'], ['10:89674917', '10:89674997'], [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}], [{'alleles': ('T', 'G'), 'rs': 'rs182708158'}, {'alleles': ('A', 'G'), 'rs': 'rs116819638'}]]
+       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]), ['HG00096', 'HG00097', 'HG00099', 'HG00100', 'HG00101', 'HG00102', 'HG00103', 'HG00104', 'HG00106', 'HG00108', 'HG00109', 'HG00110'], ['10:89674917', '10:89674997'], None, [{'alleles': ('T', 'G'), 'rs': 'rs182708158'}, {'alleles': ('A', 'G'), 'rs': 'rs116819638'}]]
         self.assertEqual(vcf, expected)
         
     def test_create_biom_table_3(self):
@@ -106,15 +108,22 @@ class ExampleTests(TestCase):
     def test_create_biom_table_4(self):
         """Does the function return the correct output when given the correct input?"""
         vcf = list(create_biom_table(self.example_file4))
-        expected = [array([[0, 0,],[0, 0,],[0, 0,],[0, 1]]), ['HG00096', 'HG00097'], ['10:89674917', '10:89674997', '10:89675036', '10:89675296' ], [{}, {}], [{'alleles': ('T', 'G'), 'rs': 'rs182708158'}, {'alleles': ('A', 'G'), 'rs': 'rs116819638'}, {'alleles': ('C', 'T'), 'rs': 'rs111627758'}, {'alleles': ('A', 'G'), 'rs': 'rs1234224'}]]
+        expected = [array([[0, 0,],[0, 0,],[0, 0,],[0, 1]]), ['HG00096', 'HG00097'], ['10:89674917', '10:89674997', '10:89675036', '10:89675296' ], None, [{'alleles': ('T', 'G'), 'rs': 'rs182708158'}, {'alleles': ('A', 'G'), 'rs': 'rs116819638'}, {'alleles': ('C', 'T'), 'rs': 'rs111627758'}, {'alleles': ('A', 'G'), 'rs': 'rs1234224'}]]
         self.assertEqual(vcf, expected)
         
     def test_create_biom_table_5(self):
         """Does the function return the correct output when given the correct input?"""
         vcf = list(create_biom_table(self.example_file5))
-        expected = [array([[2],[1],[1],[1],[1],[1],[1]]), ['TNT028'], ['1:25611035', '1:25627613', '1:25627627', '1:25627628', '1:25656531', '1:25656673', '1:25688901'], [{}], [{'alleles': ('G', 'C'), 'rs': 'rs2301153'}, {'alleles': ('C', 'A'), 'rs': '.'}, {'alleles': ('C', 'CG'), 'rs': '.'}, {'alleles': ('A', 'C'), 'rs': '.'}, {'alleles': ('T', 'C'), 'rs': '.'}, {'alleles': ('C', 'T'), 'rs': 'rs667179'}, {'alleles': ('T', 'G'), 'rs': '.'}]]
+        expected = [array([[2],[1],[1],[1],[1],[1],[1]]), ['TNT028'], ['1:25611035', '1:25627613', '1:25627627', '1:25627628', '1:25656531', '1:25656673', '1:25688901'], None, [{'alleles': ('G', 'C'), 'rs': 'rs2301153'}, {'alleles': ('C', 'A'), 'rs': '.'}, {'alleles': ('C', 'CG'), 'rs': '.'}, {'alleles': ('A', 'C'), 'rs': '.'}, {'alleles': ('T', 'C'), 'rs': '.'}, {'alleles': ('C', 'T'), 'rs': 'rs667179'}, {'alleles': ('T', 'G'), 'rs': '.'}]]
         self.assertEqual(vcf, expected)
     
+    def test_create_biom_table_6(self):
+        """Does the function return the correct output when given the correct input?"""
+        vcf = list(create_biom_table(self.example_file6))
+        expected = [array([[0], [0], [0], [0]]), ['vac6wt'], ['NC_007779.1:10098', 'NC_007779.1:10099', 'NC_007779.1:10100', 'NC_007779.1:10101'], None, [{'alleles': ('C', '.'), 'rs': '.'}, {'alleles': ('G', '.'), 'rs': '.'}, {'alleles': ('G', '.'), 'rs': '.'}, {'alleles': ('T', '.'), 'rs': '.'}]]
+        self.assertEqual(vcf, expected)
+        
+        
 example_file1 = """##fileformat=VCFv4.0													
 ##source=BCM:SNPTools:hapfuse													
 ##reference=1000Genomes-NCBI37													
@@ -165,6 +174,19 @@ example_file5 = """##reference=file://E:\Genomes\Homo_sapiens\UCSC\hg19\Sequence
 1	25656673	rs667179	C	T	2233.01	PASS	AC=1;AF=0.5;AN=2;DP=626;QD=3.57;TI=NM_001127691,NM_016124;GI=RHD,RHD;FC=Silent,Silent;EXON	GT:AD:DP:GQ:PL:VF:GQX	0/1:483,143:629:99:2263,0,9941:0.228:99
 1	25688901	.	T	G	11.34	LowVariantFreq	AC=1;AF=0.5;AN=2;DP=22;QD=0.52;TI=NM_138617,NM_020485,NM_138618,NM_138616;GI=RHCE,RHCE,RHCE,RHCE;FC=Silent,Silent,Silent,Silent;EXON	GT:AD:DP:GQ:PL:VF:GQX	0/1:20,2:22:40.83:41,0,442:0.091:11""".split('\n')
 
+example_file6 = """##INFO=<ID=QD,Number=1,Type=Float,Description="Variant Confidence/Quality by Depth">									
+##INFO=<ID=RPA,Number=.,Type=Integer,Description="Number of times tandem repeat unit is repeated, for each allele (including reference)">									
+##INFO=<ID=RU,Number=1,Type=String,Description="Tandem repeat unit (bases)">									
+##INFO=<ID=ReadPosRankSum,Number=1,Type=Float,Description="Z-score from Wilcoxon rank sum test of Alt vs. Ref read position bias">									
+##INFO=<ID=STR,Number=0,Type=Flag,Description="Variant is a short tandem repeat">									
+##UnifiedGenotyper="analysis_type=UnifiedGenotyper input_file=[TW10598_100_2.bam] read_buffer_size=null phone_home=STANDARD gatk_key=null tag=NA read_filter=[BadCigar] intervals=null excludeIntervals=null interval_set_rule=UNION interval_merging=ALL interval_padding=0 reference_sequence=/home/jsahl/wgfast/Ecoli/run_subsample/scratch/reference.fasta nonDeterministicRandomSeed=false disableRandomization=false maxRuntime=-1 maxRuntimeUnits=MINUTES downsampling_type=BY_SAMPLE downsample_to_fraction=null downsample_to_coverage=250 baq=OFF baqGapOpenPenalty=40.0 fix_misencoded_quality_scores=false allow_potentially_misencoded_quality_scores=false performanceLog=null useOriginalQualities=false BQSR=null quantize_quals=0 disable_indel_quals=false emit_original_quals=false preserve_qscores_less_than=6 globalQScorePrior=-1.0 allow_bqsr_on_reduced_bams_despite_repeated_warnings=false defaultBaseQualities=-1 validation_strictness=SILENT remove_program_records=false keep_program_records=false unsafe=null num_threads=2 num_cpu_threads_per_data_thread=1 num_io_threads=0 monitorThreadEfficiency=false num_bam_file_handles=null read_group_black_list=null pedigree=[] pedigreeString=[] pedigreeValidationType=STRICT allow_intervals_with_unindexed_bam=false generateShadowBCF=false logging_level=INFO log_to_file=null help=false version=false genotype_likelihoods_model=SNP pcr_error_rate=1.0E-4 computeSLOD=false annotateNDA=false pair_hmm_implementation=ORIGINAL min_base_quality_score=17 max_deletion_fraction=0.05 min_indel_count_for_genotyping=5 min_indel_fraction_per_sample=0.25 indel_heterozygosity=1.25E-4 indelGapContinuationPenalty=10 indelGapOpenPenalty=45 indelHaplotypeSize=80 indelDebug=false ignoreSNPAlleles=false allReadsSP=false ignoreLaneInfo=false reference_sample_calls=(RodBinding name= source=UNBOUND) reference_sample_name=null sample_ploidy=1 min_quality_score=1 max_quality_score=40 site_quality_prior=20 min_power_threshold_for_calling=0.95 min_reference_depth=100 exclude_filtered_reference_sites=false heterozygosity=0.001 genotyping_mode=DISCOVERY output_mode=EMIT_ALL_CONFIDENT_SITES standard_min_confidence_threshold_for_calling=30.0 standard_min_confidence_threshold_for_emitting=30.0 alleles=(RodBinding name= source=UNBOUND) max_alternate_alleles=6 contamination_fraction_to_filter=0.05 contamination_fraction_per_sample_file=null p_nonref_model=EXACT_INDEPENDENT logRemovedReadsFromContaminationFiltering=null exactcallslog=null dbsnp=(RodBinding name= source=UNBOUND) comp=[] out=org.broadinstitute.sting.gatk.io.stubs.VariantContextWriterStub no_cmdline_in_header=org.broadinstitute.sting.gatk.io.stubs.VariantContextWriterStub sites_only=org.broadinstitute.sting.gatk.io.stubs.VariantContextWriterStub bcf=org.broadinstitute.sting.gatk.io.stubs.VariantContextWriterStub debug_file=null metrics_file=null annotation=[] excludeAnnotation=[] filter_mismatching_base_and_quals=false"									
+##contig=<ID=NC_007779.1,length=4646332>									
+##reference=file:///home/jsahl/wgfast/Ecoli/run_subsample/scratch/reference.fasta									
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	vac6wt
+NC_007779.1	10098	.	C	.	68	.	AN=1;DP=1;MQ=60.00;MQ0=0	GT:DP:MLPSAC:MLPSAF	0:01
+NC_007779.1	10099	.	G	.	65	.	AN=1;DP=1;MQ=60.00;MQ0=0	GT:DP:MLPSAC:MLPSAF	0:01
+NC_007779.1	10100	.	G	.	68	.	AN=1;DP=1;MQ=60.00;MQ0=0	GT:DP:MLPSAC:MLPSAF	0:01
+NC_007779.1	10101	.	T	.	63	.	AN=1;DP=1;MQ=60.00;MQ0=0	GT:DP:MLPSAC:MLPSAF	0:01""".split('\n')
 
 
 if __name__ == "__main__":
