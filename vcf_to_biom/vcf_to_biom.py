@@ -96,7 +96,7 @@ def create_biom_table(f):
                             else:
                                 data_row.append(variation[0])
                         data.append(data_row)
-    if len(data) == 0:
+        if len(data) == 0:
         raise ValueError, """No valid SNP data was present in the file. Indels will be 
 ignored"""
     else: 
