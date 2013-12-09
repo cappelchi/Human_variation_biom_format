@@ -26,14 +26,19 @@ script_info['script_usage'] = [("Create biom file",
 "Create a biom file from a vcf file",
 "%prog -i input_file.vcf -o input_file.biom")]
 
+
+
 script_info['output_description']= """The output file of this script is a biom file. In
 the biom file the 'rows' are the snps identified by their locus for example 10:9892879, 
 and the 'columns' are the individual ids."""
 
 script_info['required_options'] = [\
-    make_option('-i', '--input_filepath',         
-        help='Input vcf file. This can be obtained from 1000genomes.org',
-        type='existing_path'),
+    make_option('-i', '--input_filepaths',         
+        help='Input vcf file or files. These can be a comma seperated list or contained \
+in quotes with a wild card. If two or more files are passed in the output will be \
+a biom table containing all of the SNPs, and a biom table containing only the \
+SNPs common to all files.',
+        type='existing_filepaths'),
     make_option('-o', '--output_filepath',
         help="Output file. One will be created if it doesn't exist.",
         type='new_dirpath')
@@ -46,11 +51,11 @@ script_info['optional_options'] = [\
         dest='zip_file',
         help='Output will be a gzipped file'\
         ' [default: %default]'),
-
+#     make_option('--multiple_files', action='store_true', help='Use to specify that '
+#     'the -i option is composed of multiple filepaths',
+#     default=False)
 ]
 script_info['version'] = __version__
-
-
 
 def main():
     option_parser, opts, args =\
@@ -71,7 +76,7 @@ def main():
         option_parser.error("Output directory (%s) already exists. "
                             "Won't overwrite." % opts.output_filepath)
         
-    create_biom_file(opts.input_filepath,
+    create_biom_file(opts.input_filepaths,
                      opts.output_filepath,
                      opts.mapping_fp, 
                      zip)
