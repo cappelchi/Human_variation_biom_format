@@ -14,6 +14,8 @@ __status__ = "Development"
 from os.path import exists
 from qiime.util import parse_command_line_parameters, make_option
 from vcf_to_biom import create_biom_file
+from os import makedirs
+
 
 script_info = {}
 script_info['brief_description'] = """Create a biom file from a vcf file"""
@@ -40,7 +42,8 @@ a biom table containing all of the SNPs, and a biom table containing only the \
 SNPs common to all files.',
         type='existing_filepaths'),
     make_option('-o', '--output_filepath',
-        help="Output file. One will be created if it doesn't exist.",
+        help="Path to directory that will contain the output files. \
+One will be created if it doesn't exist.",
         type='new_dirpath')
 ]
         
@@ -69,15 +72,28 @@ def main():
     else:
         zip = None         
         
-    if exists(output_fp):
-        # don't overwrite existing output directory - make the user provide a
-        # different name or move/delete the existing directory since it may
-        # have taken a while to create.
-        option_parser.error("Output directory (%s) already exists. "
-                            "Won't overwrite." % opts.output_filepath)
+#     if exists(output_fp):
+#         # don't overwrite existing output directory - make the user provide a
+#         # different name or move/delete the existing directory since it may
+#         # have taken a while to create.
+#         option_parser.error("Output directory (%s) already exists. "
+#                             "Won't overwrite." % opts.output_filepath)
+        
+        
+        
+    try:
+        makedirs(output_fp)
+    except OSError:
+        if opts.force:
+            pass
+        else:
+            # Since the analysis can take quite a while, I put this check
+            # in to help users avoid overwriting previous output.
+            option_parser.error("Output directory already exists. Please choose"
+                " a different directory")
         
     create_biom_file(opts.input_filepaths,
-                     opts.output_filepath,
+                     output_fp,
                      opts.mapping_fp, 
                      zip)
 

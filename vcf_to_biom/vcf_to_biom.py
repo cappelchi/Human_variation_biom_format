@@ -14,7 +14,7 @@ __status__ = "Development"
 from biom.table import table_factory, SparseOTUTable
 from biom.parse import MetadataMap, generatedby
 from numpy import array
-import os
+from os.path import join
 import gzip
 
 def process_data_entry_line(line, ids):
@@ -143,11 +143,11 @@ def merge_otu_tables(vcf_fps):
 def create_biom_file(vcf_fps, output_fp, mapping_fp=None, zip=None):
     master_table, master_observation_ids = merge_otu_tables(vcf_fps)
     if zip == 'gz':
-        output_master_f = gzip.open('%s%s.%s' % ('master', output_fp, zip), 'wb')
-        output_filtered_f = gzip.open('%s%s.%s' % ('filtered', output_fp, zip), 'wb')
+        output_master_f = gzip.open(join(output_fp, 'master_table.biom.zip'), 'wb')
+        output_filtered_f = gzip.open(join(output_fp, 'filtered_table.biom.zip'), 'wb')
     else:
-        output_master_f = open('%s%s' %('master_', output_fp), 'w')
-        output_filtered_f = open('%s%s' %('filtered_', output_fp), 'w')
+        output_master_f = open(join(output_fp, 'master_table.biom'), 'w')
+        output_filtered_f = open(join(output_fp, 'filtered_table.biom'), 'w')
     if mapping_fp != None:
         mapping_f = MetadataMap.fromFile(mapping_fp)
         master_table.addSampleMetadata(mapping_f)
