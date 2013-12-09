@@ -6,7 +6,7 @@ __author__ = "John Chase"
 __copyright__ = "Copyright 2013, The QIIME project"
 __credits__ = ["John Chase"]
 __license__ = "GPL"
-__version__ = "1.7.0-dev"
+__version__ = "0.0.1-dev"
 __maintainer__ = "John Chase"
 __email__ = "chasejohnh@gmail.com"
 __status__ = "Development"
@@ -105,9 +105,7 @@ ignored"""
     else:
         data = array(data)
     return data, sample_ids, observation_ids, sample_md, observation_md
-    
 
-     
 def merge_otu_tables(vcf_fps):
     """Takes a list of multiple vcf files and returns a single biom table of all files."""
     master_table = None
@@ -134,6 +132,10 @@ def merge_otu_tables(vcf_fps):
                                    sample_md, 
                                    observation_md,
                                    constructor=SparseOTUTable)
+#         if master_table == None:
+#             master_table = biom_table
+#         else:
+#             master_table.merge(biom_table)  
         try:
             master_table = master_table.merge(biom_table)
         except:

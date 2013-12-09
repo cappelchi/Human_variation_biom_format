@@ -84,11 +84,6 @@ def main():
     try:
         makedirs(output_fp)
     except OSError:
-        if opts.force:
-            pass
-        else:
-            # Since the analysis can take quite a while, I put this check
-            # in to help users avoid overwriting previous output.
             option_parser.error("Output directory already exists. Please choose"
                 " a different directory")
         
