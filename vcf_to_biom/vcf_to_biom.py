@@ -112,7 +112,6 @@ def merge_otu_tables(vcf_fps):
     #open all of the files with correct extensions. Raise a value error if incorrect extension
     master_observation_ids = None
     for vcf_fp in vcf_fps:
-        print vcf_fp
         if vcf_fp.endswith('gz'):
             vcf_fp = gzip.open(vcf_fp)
         elif vcf_fp.endswith('vcf'):
@@ -122,7 +121,7 @@ def merge_otu_tables(vcf_fps):
             are accepted"
         data, sample_ids, observation_ids, sample_md, observation_md =\
         create_biom_table(vcf_fp)
-        if master_observation_ids == None:
+        if master_observation_ids is None:
             master_observation_ids = observation_ids
         else:
             master_observation_ids = set(master_observation_ids) & set(observation_ids)
@@ -132,14 +131,15 @@ def merge_otu_tables(vcf_fps):
                                    sample_md, 
                                    observation_md,
                                    constructor=SparseOTUTable)
-#         if master_table == None:
-#             master_table = biom_table
-#         else:
-#             master_table.merge(biom_table)  
-        try:
-            master_table = master_table.merge(biom_table)
-        except:
+        
+        if master_table is None:
             master_table = biom_table
+        else:
+            master_table.merge(biom_table)  
+#         try:
+#             master_table = master_table.merge(biom_table)
+#         except AttributeError:
+#             master_table = biom_table
     return master_table, observation_ids
 
 def create_biom_file(vcf_fps, output_fp, mapping_fp=None, zip=None):
@@ -150,7 +150,7 @@ def create_biom_file(vcf_fps, output_fp, mapping_fp=None, zip=None):
     else:
         output_master_f = open(join(output_fp, 'master_table.biom'), 'w')
         output_filtered_f = open(join(output_fp, 'filtered_table.biom'), 'w')
-    if mapping_fp != None:
+    if mapping_fp is not None:
         mapping_f = MetadataMap.fromFile(mapping_fp)
         master_table.addSampleMetadata(mapping_f)
         
