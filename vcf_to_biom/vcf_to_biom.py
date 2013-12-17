@@ -59,7 +59,11 @@ def create_biom_table(f):
     observation_md = []
     data = []
     sample_md = None
+    c =0
     for line in f:
+        c += 1
+        if c%100 == 0:
+            print c
         if line.startswith('##'):
             pass
         elif line.startswith('INFO'):
