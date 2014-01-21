@@ -23,7 +23,7 @@ from numpy import array
 
 
 from vcf_to_biom import (process_data_entry_line, process_header_entry, 
-indiv_snp_variation, create_biom_table, merge_otu_tables)
+indiv_snp_variation, biom_data_from_vcfs, merge_otu_tables)
 
 class ExampleTests(TestCase):
     """ Tests the generation of lists from vcf files. """
@@ -89,57 +89,57 @@ class ExampleTests(TestCase):
         expected = [[1, 0], [0, 0], [0, 0], [1, 1], [0, 0]]
         self.assertEqual(indiv_snp_variation(input), expected)
         
-#Test for create_biom_table
-    def test_create_biom_table(self):
+#Test for biom_data_from_vcfs
+    def test_biom_data_from_vcfs(self):
         """Does the function return the correct output when given the correct input?"""
-        vcf = list(create_biom_table(self.example_file1))
+        vcf = list(biom_data_from_vcfs(self.example_file1))
         expected = [array([[0, 0, 0, 0, 0]]), ['HG00096', 'HG00097', 'HG00099', 'HG00100', 'HG00101'], ['10:89623323'], None, [{'alleles': ('G', 'A'), 'rs': 'rs1044322'}]]
         self.assertEqual(vcf, expected)
  
-    def test_create_biom_table_2(self):
+    def test_biom_data_from_vcfs_2(self):
         """Does the function return the correct output when given the correct input?"""
-        vcf = list(create_biom_table(self.example_file2))
+        vcf = list(biom_data_from_vcfs(self.example_file2))
         expected = [array([[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]), ['HG00096', 'HG00097', 'HG00099', 'HG00100', 'HG00101', 'HG00102', 'HG00103', 'HG00104', 'HG00106', 'HG00108', 'HG00109', 'HG00110'], ['10:89674917', '10:89674997'], None, [{'alleles': ('T', 'G'), 'rs': 'rs182708158'}, {'alleles': ('A', 'G'), 'rs': 'rs116819638'}]]
         self.assertEqual(vcf, expected)
         
-    def test_create_biom_table_3(self):
+    def test_biom_data_from_vcfs_3(self):
         """Does the function return the correct output when given the correct input?"""
-        self.assertRaises(ValueError, create_biom_table, self.example_file3)
+        self.assertRaises(ValueError, biom_data_from_vcfs, self.example_file3)
         
-    def test_create_biom_table_4(self):
+    def test_biom_data_from_vcfs_4(self):
         """Does the function return the correct output when given the correct input?"""
-        vcf = list(create_biom_table(self.example_file4))
+        vcf = list(biom_data_from_vcfs(self.example_file4))
         expected = [array([[0, 0,],[0, 0,],[0, 0,],[0, 1]]), ['HG00096', 'HG00097'], ['10:89674917', '10:89674997', '10:89675036', '10:89675296' ], None, [{'alleles': ('T', 'G'), 'rs': 'rs182708158'}, {'alleles': ('A', 'G'), 'rs': 'rs116819638'}, {'alleles': ('C', 'T'), 'rs': 'rs111627758'}, {'alleles': ('A', 'G'), 'rs': 'rs1234224'}]]
         self.assertEqual(vcf, expected)
         
-    def test_create_biom_table_5(self):
+    def test_biom_data_from_vcfs_5(self):
         """Does the function return the correct output when given the correct input?"""
-        vcf = list(create_biom_table(self.example_file5))
+        vcf = list(biom_data_from_vcfs(self.example_file5))
         expected = [array([[2],[1],[1],[1],[1],[1]]), ['TNT028'], ['1:25611035', '1:25627613', '1:25627628', '1:25656531', '1:25656673', '1:25688901'], None, [{'alleles': ('G', 'C'), 'rs': 'rs2301153'}, {'alleles': ('C', 'A'), 'rs': '.'}, {'alleles': ('A', 'C'), 'rs': '.'}, {'alleles': ('T', 'C'), 'rs': '.'}, {'alleles': ('C', 'T'), 'rs': 'rs667179'}, {'alleles': ('T', 'G'), 'rs': '.'}]]
         self.assertEqual(vcf, expected)
     
-    def test_create_biom_table_6(self):
+    def test_biom_data_from_vcfs_6(self):
         """Does the function return the correct output when given the correct input?"""
-        vcf = list(create_biom_table(self.example_file6))
+        vcf = list(biom_data_from_vcfs(self.example_file6))
         expected = [array([[0], [0], [0], [0]]), ['vac6wt'], ['NC_007779.1:10098', 'NC_007779.1:10099', 'NC_007779.1:10100', 'NC_007779.1:10101'], None, [{'alleles': ('C', '.'), 'rs': '.'}, {'alleles': ('G', '.'), 'rs': '.'}, {'alleles': ('G', '.'), 'rs': '.'}, {'alleles': ('T', '.'), 'rs': '.'}]]
         self.assertEqual(vcf, expected)
         
-    def test_create_biom_table_7(self):
+    def test_biom_data_from_vcfs_7(self):
         """Does the function return the correct output when given the correct input?"""
-        vcf = list(create_biom_table(self.example_file7))
+        vcf = list(biom_data_from_vcfs(self.example_file7))
         expected = [array([[0, 0], [0, 0], [0, 1]]), ['vac7wt', 'vac8wt'], ['NC_007779.1:10098', 'NC_007779.1:10099', 'NC_007779.1:10100'], None, [{'alleles': ('C', 'T'), 'rs': '.'}, {'alleles': ('G', '.'), 'rs': '.'}, {'alleles': ('G', 'A'), 'rs': '.'}]]
         self.assertEqual(vcf, expected)
         
-    def test_create_biom_table_8(self):
+    def test_biom_data_from_vcfs_8(self):
         """Does the function return the correct output when given the correct input?"""
-        vcf = list(create_biom_table(self.example_file8))
+        vcf = list(biom_data_from_vcfs(self.example_file8))
         expected = [array([[1], [1], [2], [2], [2]]), ['ALO066'], ['chr1:43424812', 'chr1:158580428', 'chr1:158580759', 'chr1:158582646', 'chr1:158584091'], 
         None, [{'alleles': ('C', 'G'), 'rs': 'rs3754226'}, {'alleles': ('A', 'C'), 'rs': 'rs75855672'}, {'alleles': ('G', 'A'), 'rs': 'rs12601'}, {'alleles': ('T', 'C'), 'rs': 'rs2251969'}, {'alleles': ('A', 'G'), 'rs': 'rs952094'}]]
         self.assertEqual(vcf, expected)
         
-    def test_create_biom_table_9(self):
-        vcf = list(create_biom_table(self.example_file9))
+    def test_biom_data_from_vcfs_9(self):
+        vcf = list(biom_data_from_vcfs([self.example_file9]))
         expected = [array([[1]]), ['ALO066'], ['chr4:144801728'], None, [{'alleles': ('C', 'T'), 'rs': '.'}]]
         self.assertEqual(vcf, expected)
 

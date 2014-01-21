@@ -11,7 +11,29 @@ def biom_data_from_vcfs(vcfs, min_position=0, max_position=inf):
     sids = {}
     ordered_sids = []
     data = {}
+    master_oids = set([])
     for vcf in vcfs:
+        working_oids = set([])
+        vcf = biom_open(vcf)
+        for line in vcf:
+            fields = line.strip().split('\t')
+            if fields[0] == '#CHROM':
+                pass
+            elif fields[0].startswith("#"):
+                pass
+            else:
+                chrom = fields[0]
+                pos = int(fields[1])
+                oid = '%s.%d' % (chrom, pos)
+                working_oids.add(oid)
+        if len(master_oids) == 0:
+            master_oids = working_oids
+        else:
+            master_oids = set.intersection(master_oids, working_oids)
+#            master_oids = master_oids | working_oids
+        vcf.close()
+    for vcf in vcfs:
+        vcf = biom_open(vcf)
         for line in vcf:
             fields = line.strip().split('\t')
             if fields[0] == '#CHROM':
@@ -30,7 +52,8 @@ def biom_data_from_vcfs(vcfs, min_position=0, max_position=inf):
                 pos = int(fields[1])
                 oid = '%s.%d' % (chrom, pos)
                 if fields[4] != '.' and \
-                   min_position <= pos <= max_position:
+                   min_position <= pos <= max_position and \
+                   oid in master_oids:
                     try:
                        oid_index = oids[oid]
                     except KeyError:
@@ -50,9 +73,10 @@ if __name__ == "__main__":
         exit(0)
     
     output_biom_fp = argv[1]
-    vcfs = map(biom_open,argv[2:])
+    vcfs = argv[2:]
     
     data, oids, sids = biom_data_from_vcfs(vcfs)
+    print oids, data
     table = table_factory(data, sample_ids=sids, observation_ids=oids)
     
     output_biom_f = open(output_biom_fp,'w')
@@ -116,3 +140,9 @@ if __name__ == "__main__":
 #     else:
 #         data = array(data)
 #     return data, sample_ids, observation_ids, sample_md, observation_md
+
+
+
+
+
+#time python /home/johnchase/vcf_bacteria_data/alpha_code/simple_vcf_to_biom.py /home/johnchase/vcf_bacteria_data/vcfs/test_out.biom /home/johnchase/vcf_bacteria_data/vcfs/Bpseudo-INT2-217_CAGATC_L008_001-novo-gatk.vcf /home/johnchase/vcf_bacteria_data/vcfs/Bpseudo-INT2-87_TTAGGC_L008_001-novo-gatk.vcf /home/johnchase/vcf_bacteria_data/vcfs/Bpseudo-INT2-223_ACTTGA_L008_001-novo-gatk.vcf /home/johnchase/vcf_bacteria_data/vcfs/Bpseudo-INT2-91_TGACCA_L008_001-novo-gatk.vcf /home/johnchase/vcf_bacteria_data/vcfs/Bpseudo-INT2-24_ATCACG_L008_001-novo-gatk.vcf /home/johnchase/vcf_bacteria_data/vcfs/Burkholderia-pseudomallei-INT37Bp018_TTCCATTG_L004_001-novo-gatk.vcf /home/johnchase/vcf_bacteria_data/vcfs/Bpseudo-INT2-38_CGATGT_L008_001-novo-gatk.vcf
